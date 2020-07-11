@@ -87,7 +87,19 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data  =array();
+        $data['class_id']  = $request->class_id;
+        $data['section_id']  = $request->section_id;
+        $data['name']  = $request->name;
+        $data['phone']  = $request->phone;
+        $data['email']  = $request->email;
+        $data['password']  =Hash::make($request->password);
+        $data['photo']  = $request->photo;
+        $data['address']  = $request->address;
+        $data['gender']  = $request->gender;
+          DB::table('students')->where('id',$id)
+                     ->update($data);
+          return response('Student Upadted!');
     }
 
     /**
@@ -98,6 +110,11 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $img  =DB::table('students')->where('id',$id)
+                  ->first();// Get Specific fisrt data
+         $image_path  =$img->photo; // get image data
+         unlink($image_path); //image unlink from folder
+        DB::table('students')->where('id',$id)->delete();
+        return response('Student Deleted!');           
     }
 }
