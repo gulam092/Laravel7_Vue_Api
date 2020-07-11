@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\Scalss;
+use App\Model\Student;
 use DB;
-class SclassController extends Controller
+use Illuminate\Support\Facades\Hash;
+class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,9 @@ class SclassController extends Controller
      */
     public function index()
     {
-        $sclass = DB::table('sclasses')->get();
-        return response()->json($sclass);
+        $student  =DB::table('students')->get(); //Query Baulder
+        //$student  = Student::all();//Eloquent 
+        return response()->json($student);
     }
 
     /**
@@ -26,7 +28,7 @@ class SclassController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -37,15 +39,19 @@ class SclassController extends Controller
      */
     public function store(Request $request)
     {
-      $validateData = $request->validate([
-     'class_name' => 'required|unique:sclasses|max:12',
-    ]);
-      
-
         $data  =array();
-        $data['class_name']  =$request->class_name;
-        $insert   =DB::table('sclasses')->insert($data);
-        return response('inserted succesfully!');
+        $data['class_id']  = $request->class_id;
+        $data['section_id']  = $request->section_id;
+        $data['name']  = $request->name;
+        $data['phone']  = $request->phone;
+        $data['email']  = $request->email;
+        $data['password']  =Hash::make($request->password);
+        $data['photo']  = $request->photo;
+        $data['address']  = $request->address;
+        $data['gender']  = $request->gender;
+          DB::table('students')->insert($data);
+          return response('Student Inserted!');
+
     }
 
     /**
@@ -56,9 +62,9 @@ class SclassController extends Controller
      */
     public function show($id)
     {
-        $show  =DB::table('sclasses')->where('id',$id)
-                 ->first();
-        return response()->json($show);
+       $student  =DB::table('students')->where('id',$id)
+                  ->first();
+        return response()->json($student);
     }
 
     /**
@@ -81,11 +87,7 @@ class SclassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data  =array();
-        $data['class_name']  =$request->class_name;
-        $insert   =DB::table('sclasses')->where('id',$id)
-                       ->update($data);
-        return response('updated succesfully!');
+        //
     }
 
     /**
@@ -96,8 +98,6 @@ class SclassController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('sclasses')->where('id',$id)->delete();
-
-        return response("Deleted!");
+        //
     }
 }

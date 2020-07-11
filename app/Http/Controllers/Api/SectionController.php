@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\Scalss;
-use DB;
-class SclassController extends Controller
+use App\Model\Section;
+class SectionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,8 @@ class SclassController extends Controller
      */
     public function index()
     {
-        $sclass = DB::table('sclasses')->get();
-        return response()->json($sclass);
+         $section   = Section::all();
+        return response()->json($section);
     }
 
     /**
@@ -24,10 +23,7 @@ class SclassController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -37,15 +33,14 @@ class SclassController extends Controller
      */
     public function store(Request $request)
     {
-      $validateData = $request->validate([
-     'class_name' => 'required|unique:sclasses|max:12',
-    ]);
-      
+        $validateData = $request->validate([
+        'class_id' => 'required',
+        'section_name' => 'required|unique:sections|max:25',
+        
 
-        $data  =array();
-        $data['class_name']  =$request->class_name;
-        $insert   =DB::table('sclasses')->insert($data);
-        return response('inserted succesfully!');
+    ]);
+        $Section   = Section::create($request->all());
+        return response('Section Data Inserted!');
     }
 
     /**
@@ -56,9 +51,8 @@ class SclassController extends Controller
      */
     public function show($id)
     {
-        $show  =DB::table('sclasses')->where('id',$id)
-                 ->first();
-        return response()->json($show);
+       $section  =Section::findorfail($id);
+        return response()->json($section);
     }
 
     /**
@@ -67,10 +61,7 @@ class SclassController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+   
 
     /**
      * Update the specified resource in storage.
@@ -81,11 +72,9 @@ class SclassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data  =array();
-        $data['class_name']  =$request->class_name;
-        $insert   =DB::table('sclasses')->where('id',$id)
-                       ->update($data);
-        return response('updated succesfully!');
+         $section  =Section::findorfail($id);
+        $section->update($request->all());
+        return response('Updated!');
     }
 
     /**
@@ -96,8 +85,7 @@ class SclassController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('sclasses')->where('id',$id)->delete();
-
-        return response("Deleted!");
+       Section::where('id',$id)->delete();
+        return response('Deleted!');
     }
 }
